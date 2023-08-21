@@ -1,11 +1,11 @@
 {
-    "apps": [
-      {
-        "name": "games_server",
-        "script": "npm",
-        "args": "run start",
-        "watch": true,
-        "ignore_watch": ["node_modules", "public"]
-      }
-    ]
-  }
+  "apps": [
+    {
+      "name": "games_server",
+      "script": "C:\\Program Files\\nodejs\\node_modules\\npm\\bin\\npm-cli.js",
+      "args": "run start",
+      "watch": true,
+      "ignore_watch": ["node_modules", "public", "data"]
+    }
+  ]
+}

@@ -13,8 +13,14 @@ class PacmanController {
   );
 
   async getRankingList(ctx: Koa.Context) {
-    const result = fs.readFileSync(PacmanController.filePath);
-    ctx.body = result;
+    try {
+      const result = fs.readFileSync(PacmanController.filePath);
+      console.log(result);
+      ctx.body = result;
+    } catch (error) {
+      logger.error(`${(error as Error).message}`);
+      ctx.throw(400, "未知错误");
+    }
   }
 
   async addRecord(ctx: Koa.Context) {
