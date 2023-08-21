@@ -3,6 +3,7 @@ import path from "path";
 import fs from "fs";
 
 import logger from "./winston";
+import { IRankRecord } from "./type";
 
 class PacmanController {
   static filePath = path.join(
@@ -28,11 +29,36 @@ class PacmanController {
     if (!id || !score) {
       ctx.throw(400, `请求参数不正确: id = ${id}, score = ${score}`);
     }
+    const result = fs.readFileSync(PacmanController.filePath, "utf-8");
+    console.log(result);
+
+    const lines = result.split("\n");
+    let rankingList: IRankRecord[] = [];
+    for (let i = 0; i < Math.floor(lines.length / 2); i++) {
+      const id_ = lines[i * 2].trim();
+      const score_: number = Number(lines[i * 2 + 1].trim());
+      rankingList.push({ id: id_, score: score_ });
+    }
+    rankingList.push({ id, score });
+    rankingList.sort((lhs, rhs) => {
+      return rhs.score - lhs.score;
+    });
+    rankingList = rankingList.slice(0, Math.min(20, rankingList.length));
     try {
-      fs.appendFileSync(PacmanController.filePath, id + "\n");
-      fs.appendFileSync(PacmanController.filePath, score + "\n");
+      let str = "";
+      for (let i = 0; i < rankingList.length; i++) {
+        const { id: id_, score: score_ } = rankingList[i];
+        str += id_ + "\n";
+        str += score_ + "\n";
+      }
+      fs.writeFileSync(PacmanController.filePath, "");
+      fs.appendFileSync(PacmanController.filePath, str);
       logger.info(
-        `adding record\n${JSON.stringify(ctx.request.body, null, 2)}\nsuccess!`
+        `adding record\n${JSON.stringify(
+          ctx.request.body,
+          null,
+          2
+        )}\nsuccess!\nNow the List is ${str}`
       );
       ctx.status = 200;
     } catch (error) {
